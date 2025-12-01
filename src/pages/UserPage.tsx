@@ -22,6 +22,8 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("UserPage está renderizando para slug:", slug); // Adicionado para depuração
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!slug) {
