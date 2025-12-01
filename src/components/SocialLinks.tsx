@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Coffee, Instagram, Facebook, Linkedin, Send, Spotify } from 'lucide-react';
+import { Globe, Coffee, Instagram, Facebook, Linkedin, Send, Music } from 'lucide-react'; // Alterado Spotify para Music
 import { Button } from '@/components/ui/button';
 
 interface SocialLinkProps {
@@ -25,7 +25,7 @@ const SocialLinks = () => {
     { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/heliocoutooficial' },
     { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/helio-couto-oficial/' },
     { icon: Send, label: 'Telegram', href: 'https://t.me/heliocoutooficial' },
-    { icon: Spotify, label: 'Spotify', href: 'https://open.spotify.com/artist/0Z0Z0Z0Z0Z0Z0Z0Z0Z0Z0Z' }, // Adicionado o link do Spotify
+    { icon: Music, label: 'Spotify', href: 'https://open.spotify.com/artist/0Z0Z0Z0Z0Z0Z0Z0Z0Z0Z0Z' }, // Usando Music como substituto
   ];
 
   return (
