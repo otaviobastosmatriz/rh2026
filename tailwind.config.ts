@@ -62,6 +62,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Custom color for the layout
+        heliopurple: {
+          DEFAULT: '#6A1B9A',
+          light: '#8E24AA',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
