@@ -22,7 +22,7 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log("UserPage está renderizando para slug:", slug); // Adicionado para depuração
+  console.log("UserPage está renderizando para slug:", slug);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -133,7 +133,7 @@ const UserPage = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="flex-grow w-full md:w-auto">
+          <div className="flex-1 w-full md:w-auto">
             <SocialLinks />
           </div>
         </div>
