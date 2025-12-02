@@ -15,12 +15,12 @@ serve(async (req) => {
     const payload = await req.json();
     console.log('BSPay Webhook received:', payload);
 
-    // Extract relevant information from the webhook payload
-    const externalId = payload.external_id; // This should be the user's slug
-    const status = payload.status; // e.g., 'PAID', 'PENDING', 'CANCELED'
+    // Extract relevant information from the webhook payload, now nested under requestBody
+    const externalId = payload.requestBody?.external_id; // Access external_id from requestBody
+    const status = payload.requestBody?.status; // Access status from requestBody
 
     if (!externalId || !status) {
-      return new Response(JSON.stringify({ error: 'Missing external_id or status in webhook payload' }), {
+      return new Response(JSON.stringify({ error: 'Missing external_id or status in webhook payload (or not in requestBody)' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -53,7 +53,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('BSPay Webhook Edge Function Error:', error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,

@@ -66,7 +66,7 @@ serve(async (req) => {
     }
 
     // IMPORTANT: For production, move this key to Supabase Secrets and access via Deno.env.get()
-    const BSPAY_AUTH_KEY = 'Basic aXNhcXVlcmVpc183ODA3MjgzNTEyOjNhZWI1Mzg5NDQ5Yzg1M2YzYmFkNmJmNzBlZmFlMDBmNjhiZWUzNjg0MjdlYTdhZWEwNTY1OTk2ZmY0OWUxYmY=';
+    const BSPAY_AUTH_KEY = 'Basic aXNhcXVlcmVpc183ODA3MjgzNTEyOjNhZWI1Mzg5NDQ5Yzg1M2YzYmFkNmJmNzBlZmFlMDBmNjhiZWUzNjg0NDk5ZTEwYmY=';
     const BSPAY_API_BASE_URL = 'https://api.bspay.co/v2';
 
     // 1. Get Access Token
@@ -107,7 +107,7 @@ serve(async (req) => {
         document: generatedCpf,
         email: userEmail,
       },
-      postbackUrl: "https://webhook.site/657df57d-40c8-45ba-84e0-653903ef5a38", // URL do webhook.site
+      postbackUrl: "https://ressonanteharmonica.com/api/1.1/wf/postback_pix", // Restaurado para o URL de produção
     };
 
     const pixQrCodeResponse = await fetch(`${BSPAY_API_BASE_URL}/pix/qrcode`, {
