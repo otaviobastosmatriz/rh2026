@@ -67,13 +67,14 @@ serve(async (req) => {
 
     // IMPORTANT: For production, move this key to Supabase Secrets and access via Deno.env.get()
     const BSPAY_AUTH_KEY = 'Basic aXNhcXVlcmVpc183ODA3MjgzNTEyOjNhZWI1Mzg5NDQ5Yzg1M2YzYmFkNmJmNzBlZmFlMDBmNjhiZWUzNjg0MjdlYTdhZWEwNTY1OTk2ZmY0OWUxYmY=';
-    const BSPAY_API_BASE_URL = 'https://api.bspay.io/v1';
+    const BSPAY_API_BASE_URL = 'https://api.bspay.co/v2'; // Base URL atualizada para .co e v2
 
     // 1. Get Access Token
-    console.log(`Buscando token em: ${BSPAY_API_BASE_URL}/auth/token`);
-    const tokenResponse = await fetch(`${BSPAY_API_BASE_URL}/auth/token`, {
+    console.log(`Buscando token em: ${BSPAY_API_BASE_URL}/oauth/token`);
+    const tokenResponse = await fetch(`${BSPAY_API_BASE_URL}/oauth/token`, {
       method: 'POST',
       headers: {
+        'Accept': 'application/json', // Adicionado cabeçalho Accept
         'Authorization': BSPAY_AUTH_KEY,
         'Content-Type': 'application/json',
       },
@@ -109,7 +110,7 @@ serve(async (req) => {
       expires_in: 600, // 10 minutes
     };
 
-    const pixChargeResponse = await fetch(`${BSPAY_API_BASE_URL}/pix/charge`, {
+    const pixChargeResponse = await fetch(`${BSPAY_API_BASE_URL}/pix/charge`, { // Endpoint Pix Charge atualizado para v2
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${access_token}`,
