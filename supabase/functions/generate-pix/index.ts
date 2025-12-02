@@ -40,6 +40,22 @@ serve(async (req) => {
   }
 
   try {
+    // --- INÍCIO DO TESTE DE CONECTIVIDADE ---
+    console.log('Tentando fetch de diagnóstico para jsonplaceholder...');
+    try {
+      const diagnosticResponse = await fetch('https://jsonplaceholder.typicode.com/todos/1');
+      if (diagnosticResponse.ok) {
+        const diagnosticData = await diagnosticResponse.json();
+        console.log('Fetch de diagnóstico bem-sucedido:', diagnosticData);
+      } else {
+        console.error('Fetch de diagnóstico falhou:', diagnosticResponse.status, await diagnosticResponse.text());
+      }
+    } catch (diagError: any) {
+      console.error('Fetch de diagnóstico lançou um erro:', diagError.message);
+    }
+    console.log('Fetch de diagnóstico concluído.');
+    // --- FIM DO TESTE DE CONECTIVIDADE ---
+
     const { userSlug, userName, userEmail } = await req.json();
 
     if (!userSlug || !userName || !userEmail) {
@@ -54,6 +70,7 @@ serve(async (req) => {
     const BSPAY_API_BASE_URL = 'https://api.bspay.io/v1';
 
     // 1. Get Access Token
+    console.log(`Buscando token em: ${BSPAY_API_BASE_URL}/auth/token`);
     const tokenResponse = await fetch(`${BSPAY_API_BASE_URL}/auth/token`, {
       method: 'POST',
       headers: {
@@ -75,8 +92,10 @@ serve(async (req) => {
     }
 
     const { access_token } = await tokenResponse.json();
+    console.log('Token de acesso BSPay obtido com sucesso.');
 
     // 2. Generate Pix Charge
+    console.log(`Gerando cobrança Pix para o usuário: ${userSlug}`);
     const generatedCpf = generateValidCpf(); // Generate a random valid CPF
     const pixChargePayload = {
       amount: 4800, // R$48.00 in cents
@@ -113,13 +132,14 @@ serve(async (req) => {
 
     const pixData = await pixChargeResponse.json();
     const { brCode, qrCodeUrl } = pixData;
+    console.log('Cobrança Pix gerada com sucesso.');
 
     return new Response(JSON.stringify({ brCode, qrCodeUrl }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Edge Function Error:', error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
