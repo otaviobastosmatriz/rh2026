@@ -135,6 +135,7 @@ serve(async (req) => {
     const pixData = await pixQrCodeResponse.json();
     const { brCode, qrCodeUrl } = pixData;
     console.log('QR Code Pix gerado com sucesso.');
+    console.log('Retornando dados Pix:', { brCode, qrCodeUrl }); // NOVO LOG AQUI
 
     return new Response(JSON.stringify({ brCode, qrCodeUrl }), {
       status: 200,
