@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Coffee, Instagram, Facebook, Linkedin, Send, Music } from 'lucide-react'; // Alterado Spotify para Music
+import { Globe, Coffee, Instagram, Facebook, Linkedin, Send, Spotify } from 'lucide-react'; // Importar Spotify
 import { Button } from '@/components/ui/button';
 
 interface SocialLinkProps {
@@ -19,13 +19,13 @@ const SocialLink: React.FC<SocialLinkProps> = ({ icon: Icon, label, href }) => (
 
 const SocialLinks = () => {
   const links = [
-    { icon: Globe, label: 'Site', href: 'https://ressonanciaharmonica.com.br/' },
-    { icon: Coffee, label: 'Cursos', href: 'https://ressonanciaharmonica.com.br/cursos/' },
-    { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/heliocouto_oficial/' },
-    { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/heliocoutooficial' },
-    { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/helio-couto-oficial/' },
-    { icon: Send, label: 'Telegram', href: 'https://t.me/heliocoutooficial' },
-    { icon: Music, label: 'Spotify', href: 'https://open.spotify.com/artist/0Z0Z0Z0Z0Z0Z0Z0Z0Z0Z0Z' }, // Usando Music como substituto
+    { icon: Globe, label: 'Site', href: 'https://heliocouto.com' }, // Ajustado para o link do HTML
+    { icon: Coffee, label: 'Cursos', href: 'https://cursosheliocouto.com.br' }, // Ajustado para o link do HTML
+    { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/helio.couto' }, // Ajustado para o link do HTML
+    { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/heliocouto' }, // Ajustado para o link do HTML
+    { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/heliocoutorh/' }, // Ajustado para o link do HTML
+    { icon: Send, label: 'Telegram', href: 'https://t.me/heliocouto' }, // Ajustado para o link do HTML
+    { icon: Spotify, label: 'Spotify', href: 'https://open.spotify.com/artist/5og9v0exhkpYUSdE3Xlfmm?si=Q3Q4-NCOS5GSRKq5HXtogQ' }, // Usando Spotify
   ];
 
   return (
