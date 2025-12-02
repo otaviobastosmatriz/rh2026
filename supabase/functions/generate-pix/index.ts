@@ -133,9 +133,16 @@ serve(async (req) => {
     }
 
     const pixData = await pixQrCodeResponse.json();
-    const { brCode, qrCodeUrl } = pixData;
+    console.log('Resposta completa da BSPay para Pix QR Code:', pixData); // NOVO LOG AQUI
+
+    // AQUI ESTÁ O PONTO CRÍTICO: Precisamos ajustar a desestruturação para os nomes corretos das propriedades
+    // Por exemplo, se a BSPay retorna { payload: "...", qr_code_image: "..." }
+    // const brCode = pixData.payload;
+    // const qrCodeUrl = pixData.qr_code_image;
+    const { brCode, qrCodeUrl } = pixData; // Manter por enquanto, mas o log acima nos dirá o que mudar
+
     console.log('QR Code Pix gerado com sucesso.');
-    console.log('Retornando dados Pix:', { brCode, qrCodeUrl }); // NOVO LOG AQUI
+    console.log('Retornando dados Pix:', { brCode, qrCodeUrl });
 
     return new Response(JSON.stringify({ brCode, qrCodeUrl }), {
       status: 200,
