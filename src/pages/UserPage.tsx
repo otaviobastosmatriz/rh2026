@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { showError } from '@/utils/toast';
 import Header from '@/components/Header';
-// import SocialLinks from '@/components/SocialLinks'; // Removido
 import AudioPlayer from '@/components/AudioPlayer';
 import { Button } from '@/components/ui/button';
-import { FileText, Link, User, Mail, CircleAlert } from 'lucide-react'; // Adicionado CircleAlert para o aviso
+import { FileText, Link, User, Mail, CircleAlert } from 'lucide-react';
+import InstructionsModal from '@/components/InstructionsModal'; // Importar o novo componente
 
 interface UserProfile {
   slug: string;
@@ -21,6 +21,7 @@ const UserPage = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false); // Novo estado para o modal
 
   console.log("UserPage está renderizando para slug:", slug);
 
@@ -119,9 +120,9 @@ const UserPage = () => {
   }
 
   const handleCopyLink = () => {
-    const linkToCopy = `https://ressonanciaharmonica.com.br/129652/${slug}`; // Usando o slug real
+    const linkToCopy = `https://ressonanciaharmonica.com.br/129652/${slug}`;
     navigator.clipboard.writeText(linkToCopy)
-      .then(() => showError('Link copiado para a área de transferência!')) // Usando showError para notificação
+      .then(() => showError('Link copiado para a área de transferência!'))
       .catch(err => console.error('Falha ao copiar o link:', err));
   };
 
@@ -135,7 +136,7 @@ const UserPage = () => {
             Siga o <span className="text-heliopurple">Professor Hélio Couto</span> nas redes sociais:
           </p>
 
-          <div className="flex flex-col items-center justify-center mb-8"> {/* Ajustado para centralizar a imagem */}
+          <div className="flex flex-col items-center justify-center mb-8">
             <div className="text-center p-5 flex-shrink-0">
               <img
                 className="img-fluid rounded-full border-4 border-heliopurple w-40 h-40 object-cover mx-auto"
@@ -143,9 +144,6 @@ const UserPage = () => {
                 alt="Professor Hélio Couto"
               />
             </div>
-            {/* <div className="flex-1 w-full max-w-xs lg:max-w-none">
-              <SocialLinks />
-            </div> */} {/* SocialLinks removido */}
           </div>
 
           <hr className="border-heliopurple my-8" />
@@ -154,7 +152,7 @@ const UserPage = () => {
           <AudioPlayer src="https://cdn.ressonanciaharmonica.com.br/assets/audio/3beed790b3e35dd4a4f543d5776e7712.mp3" />
 
           <div className="flex items-center justify-center text-orange-600 bg-orange-50 border border-orange-300 rounded-md p-3 mt-6 mb-8">
-            <CircleAlert className="h-5 w-5 mr-2 text-red-500" /> {/* Ícone de alerta */}
+            <CircleAlert className="h-5 w-5 mr-2 text-red-500" />
             <p className="text-sm text-center font-bold">Atenção: o link desta página é pessoal e não deve ser compartilhado com outras pessoas</p>
           </div>
 
@@ -174,11 +172,13 @@ const UserPage = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-5">
-            <a href={`https://ressonanciaharmonica.com.br/download/5a8e66b9/${slug}`} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-              <Button className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full">
-                <FileText className="h-5 w-5 mr-2" /> Manual da RH
-              </Button>
-            </a>
+            {/* Botão alterado para abrir o modal */}
+            <Button
+              onClick={() => setShowInstructionsModal(true)}
+              className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full sm:w-auto"
+            >
+              <FileText className="h-5 w-5 mr-2" /> Instruções da RH
+            </Button>
             <Button onClick={handleCopyLink} className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full">
               <Link className="h-5 w-5 mr-2" /> Copiar o link da minha RH
             </Button>
@@ -189,6 +189,12 @@ const UserPage = () => {
       <footer className="mt-8 text-center text-gray-600 text-sm pb-8">
         <p className="text-white">&copy; Hélio Couto 2025 | Todos os direitos reservados | <a href="https://ressonanciaharmonica.com.br/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">Política de privacidade</a></p>
       </footer>
+
+      {/* Renderiza o modal de instruções */}
+      <InstructionsModal
+        isOpen={showInstructionsModal}
+        onClose={() => setShowInstructionsModal(false)}
+      />
     </div>
   );
 };
