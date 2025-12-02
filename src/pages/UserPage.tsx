@@ -7,14 +7,15 @@ import { showError } from '@/utils/toast';
 import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Button } from '@/components/ui/button';
-import { FileText, Link, User, Mail, CircleAlert, Video } from 'lucide-react'; // Import Video icon
+import { FileText, Link, User, Mail, CircleAlert, Video, Check } from 'lucide-react'; // Importar Check icon
 import InstructionsModal from '@/components/InstructionsModal';
-import VideoModal from '@/components/VideoModal'; // Importar o novo componente VideoModal
+import VideoModal from '@/components/VideoModal';
 
 interface UserProfile {
   slug: string;
   name: string;
   email: string;
+  status: boolean; // Adicionado o campo status
 }
 
 const UserPage = () => {
@@ -23,7 +24,7 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showInstructionsModal, setShowInstructionsModal] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false); // Novo estado para o modal de vídeo
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
   console.log("UserPage está renderizando para slug:", slug);
 
@@ -40,7 +41,7 @@ const UserPage = () => {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('name, email, slug')
+          .select('name, email, slug, status') // Incluído 'status' na seleção
           .eq('slug', slug)
           .single();
 
@@ -128,6 +129,11 @@ const UserPage = () => {
       .catch(err => console.error('Falha ao copiar o link:', err));
   };
 
+  const handlePaymentClick = () => {
+    // TODO: Substituir por URL de pagamento real
+    window.open('https://example.com/payment-link', '_blank');
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-start relative pt-20 pb-8 px-4">
       <Header />
@@ -156,6 +162,23 @@ const UserPage = () => {
           <h3 className="text-heliopurple text-center font-bold text-2xl mb-4">Áudio</h3>
           <AudioPlayer src="https://cdn.ressonanciaharmonica.com.br/assets/audio/3beed790b3e35dd4a4f543d5776e7712.mp3" />
 
+          {/* Bloco de Pagamento Pendente */}
+          {!user.status && (
+            <div className="border border-red-300 rounded-md p-6 mt-8 mb-8 bg-red-50 text-center">
+              <h4 className="text-red-700 font-bold text-lg mb-3">PAGAMENTO PENDENTE</h4>
+              <p className="text-gray-700 mb-4">
+                Efetue o pagamento para que sua Ressonância se mantenha funcionando. Aperte no botão abaixo
+                para gerar seu pagamento:
+              </p>
+              <Button
+                onClick={handlePaymentClick}
+                className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center mx-auto"
+              >
+                <Check className="h-5 w-5 mr-2" /> EFETUAR PAGAMENTO
+              </Button>
+            </div>
+          )}
+
           <div className="flex items-center justify-center text-red-700 bg-red-50 border border-red-300 rounded-md p-3 mt-6 mb-8">
             <CircleAlert className="h-5 w-5 mr-2 text-red-500" />
             <p className="text-sm text-center font-bold">Atenção: o link desta página é pessoal e não deve ser compartilhado com outras pessoas</p>
@@ -183,7 +206,6 @@ const UserPage = () => {
             >
               <FileText className="h-5 w-5 mr-2" /> Instruções da RH
             </Button>
-            {/* Novo botão para o modal de vídeo */}
             <Button
               onClick={() => setShowVideoModal(true)}
               className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full sm:w-auto"
@@ -205,11 +227,10 @@ const UserPage = () => {
         isOpen={showInstructionsModal}
         onClose={() => setShowInstructionsModal(false)}
       />
-      {/* Renderizar o novo VideoModal */}
       <VideoModal
         isOpen={showVideoModal}
         onClose={() => setShowVideoModal(false)}
-        videoId="L4_Igd6Q9Oo" // O ID do vídeo do YouTube
+        videoId="L4_Igd6Q9Oo"
       />
     </div>
   );
