@@ -19,8 +19,8 @@ function generateValidCpf(): string {
       sum += cpfBase[i] * multiplier;
       multiplier--;
     }
-    const remainder = sum < 2 ? 0 : 11 - remainder; // Corrigido para remainder < 2
-    return remainder;
+    const remainder = sum % 11; // Correção aqui: calcula o resto primeiro
+    return remainder < 2 ? 0 : 11 - remainder; // Depois usa o valor calculado
   }
 
   let cpf = Array.from({ length: 9 }, () => randomDigit());
