@@ -153,7 +153,7 @@ const UserPage = () => {
           <h3 className="text-heliopurple text-center font-bold text-2xl mb-4">Áudio</h3>
           <AudioPlayer src="https://cdn.ressonanciaharmonica.com.br/assets/audio/3beed790b3e35dd4a4f543d5776e7712.mp3" />
 
-          <div className="flex items-center justify-center text-orange-600 bg-orange-50 border border-orange-300 rounded-md p-3 mt-6 mb-8">
+          <div className="flex items-center justify-center text-red-700 bg-red-50 border border-red-300 rounded-md p-3 mt-6 mb-8">
             <CircleAlert className="h-5 w-5 mr-2 text-red-500" />
             <p className="text-sm text-center font-bold">Atenção: o link desta página é pessoal e não deve ser compartilhado com outras pessoas</p>
           </div>
