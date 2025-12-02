@@ -141,62 +141,63 @@ const PixPaymentModal: React.FC<PixPaymentModalProps> = ({ isOpen, onClose, user
           <DialogTitle className="text-heliopurple text-2xl font-bold text-center">
             Efetue o pagamento da sua Ressonância Harmonica
           </DialogTitle>
+          <DialogDescription className="text-gray-700 dark:text-gray-300 text-center">
+            Siga as instruções abaixo para completar seu pagamento via Pix.
+          </DialogDescription>
         </DialogHeader>
-        <DialogDescription className="text-gray-700 dark:text-gray-300 space-y-4 text-left">
-          {isGeneratingPix ? (
-            <div className="text-center py-8">
-              <div className="loader-circle mx-auto mb-4"></div>
-              <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">Gerando código Pix...</p>
+        {isGeneratingPix ? (
+          <div className="text-center py-8">
+            <div className="loader-circle mx-auto mb-4"></div>
+            <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">Gerando código Pix...</p>
+          </div>
+        ) : (
+          <div className="p-4 space-y-4"> {/* Conteúdo principal do modal em um div */}
+            <div className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+              Seu código PIX expira em <span className="text-red-600">{formatTime(timeLeft)}</span>
             </div>
-          ) : (
-            <>
-              <div className="text-center text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                Seu código PIX expira em <span className="text-red-600">{formatTime(timeLeft)}</span>
-              </div>
 
-              {qrCodeUrl && (
-                <div className="flex justify-center mb-4">
-                  <img src={qrCodeUrl} alt="QR Code Pix" className="w-48 h-48 border border-gray-300 rounded-md" />
-                </div>
-              )}
-
-              <div className="flex flex-col gap-2">
-                <Input
-                  type="text"
-                  value={pixCode}
-                  readOnly
-                  className="text-center font-mono text-sm bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
-                />
-                <Button
-                  onClick={handleCopyPixCode}
-                  className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center"
-                  disabled={!pixCode}
-                >
-                  <Copy className="h-4 w-4 mr-2" /> Copiar Código Pix
-                </Button>
+            {qrCodeUrl && (
+              <div className="flex justify-center mb-4">
+                <img src={qrCodeUrl} alt="QR Code Pix" className="w-48 h-48 border border-gray-300 rounded-md" />
               </div>
+            )}
 
-              <div className="mt-6 space-y-3">
-                <p className="flex items-center text-heliopurple font-semibold">
-                  <CircleCheck className="h-5 w-5 mr-2" /> Siga as instruções para efetuar o pagamento via Pix
-                </p>
-                <ol className="list-decimal list-inside ml-4 space-y-2 text-gray-700 dark:text-gray-300">
-                  <li>Aperte em "Copiar Código Pix"</li>
-                  <li>Abra o App do seu banco e entre na opção PIX</li>
-                  <li>Escolha a opção <span className="font-bold">Pagar Pix Copia e Cola</span></li>
-                  <li>Depois confirme o pagamento</li>
-                </ol>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Aprovação leva no máximo 2 minutos
-                </p>
-              </div>
+            <div className="flex flex-col gap-2">
+              <Input
+                type="text"
+                value={pixCode}
+                readOnly
+                className="text-center font-mono text-sm bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+              />
+              <Button
+                onClick={handleCopyPixCode}
+                className="bg-green-600 hover:bg-green-700 text-white flex items-center justify-center"
+                disabled={!pixCode}
+              >
+                <Copy className="h-4 w-4 mr-2" /> Copiar Código Pix
+              </Button>
+            </div>
 
-              <div className="text-center text-xl font-bold text-heliopurple mt-6">
-                Valor Promocional do Pix: {PIX_VALUE}
-              </div>
-            </>
-          )}
-        </DialogDescription>
+            <div className="mt-6 space-y-3">
+              <p className="flex items-center text-heliopurple font-semibold">
+                <CircleCheck className="h-5 w-5 mr-2" /> Siga as instruções para efetuar o pagamento via Pix
+              </p>
+              <ol className="list-decimal list-inside ml-4 space-y-2 text-gray-700 dark:text-gray-300">
+                <li>Aperte em "Copiar Código Pix"</li>
+                <li>Abra o App do seu banco e entre na opção PIX</li>
+                <li>Escolha a opção <span className="font-bold">Pagar Pix Copia e Cola</span></li>
+                <li>Depois confirme o pagamento</li>
+              </ol>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Aprovação leva no máximo 2 minutos
+              </p>
+            </div>
+
+            <div className="text-center text-xl font-bold text-heliopurple mt-6">
+              Valor Promocional do Pix: {PIX_VALUE}
+            </div>
+          </div>
+        )}
         <DialogFooter className="flex flex-col gap-2 mt-6">
           <Button
             onClick={handleCheckPayment}

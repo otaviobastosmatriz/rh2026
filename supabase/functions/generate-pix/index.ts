@@ -65,7 +65,8 @@ serve(async (req) => {
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.json();
       console.error('BSPay Token Error:', errorData);
-      throw new Error(`Failed to get BSPay token: ${tokenResponse.statusText}`);
+      // Incluindo detalhes do erro na mensagem para melhor depuração
+      throw new Error(`Failed to get BSPay token: ${tokenResponse.statusText}. Details: ${JSON.stringify(errorData)}`);
     }
 
     const { access_token } = await tokenResponse.json();
@@ -96,7 +97,8 @@ serve(async (req) => {
     if (!pixChargeResponse.ok) {
       const errorData = await pixChargeResponse.json();
       console.error('BSPay Pix Charge Error:', errorData);
-      throw new Error(`Failed to generate Pix charge: ${pixChargeResponse.statusText}`);
+      // Incluindo detalhes do erro na mensagem para melhor depuração
+      throw new Error(`Failed to generate Pix charge: ${pixChargeResponse.statusText}. Details: ${JSON.stringify(errorData)}`);
     }
 
     const pixData = await pixChargeResponse.json();
