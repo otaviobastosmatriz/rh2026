@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,70 +18,17 @@ interface VideoModalProps {
 }
 
 const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => {
-  const videoContainerRef = useRef<HTMLDivElement>(null);
-
-  // Função interna: monta o estado INICIAL (botão "Assistir vídeo")
-  const renderInitial = (container: HTMLDivElement, currentVideoId: string) => {
-    if (!container) {
-      console.log("VideoModal renderInitial: Container para vídeo não encontrado.");
-      return;
-    }
-    console.log("VideoModal renderInitial: Renderizando estado inicial (botão de play).");
-
-    // Replicando a lógica do script original: define o innerHTML diretamente com o botão
-    container.innerHTML = '<button type="button" class="play-button">Assistir vídeo</button>';
-    console.log("VideoModal renderInitial: Play button HTML injetado diretamente.");
-
-    const btn = container.querySelector(".play-button");
-    if (!btn) {
-      console.log("VideoModal renderInitial: Botão de play não encontrado após injeção HTML.");
-      return;
-    }
-
-    const clickHandler = () => {
-      console.log("VideoModal renderInitial: Botão de play clicado, carregando iframe.");
-      const src =
-        `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1`;
-
-      container.innerHTML =
-        '<div class="video-inner" style="position:relative;width:100%;height:100%;">' +
-          '<iframe class="yt-protected-iframe" ' +
-            `src="${src}" ` +
-            'title="Video" ' +
-            'frameborder="0" ' +
-            'allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture">' +
-          '</iframe>' +
-          '<div class="block-overlay"></div>' +
-          '<div class="loading-overlay">' +
-            '<div class="loader-circle"></div>' +
-            '<div class="loading-text">Carregando vídeo...</div>' +
-          '</div>' +
-        '</div>';
-      console.log("VideoModal renderInitial: Iframe e overlays injetados.");
-
-      // Remove a tela de "Carregando vídeo" depois de 6s,
-      // mas mantém o overlay de bloqueio de clique
-      setTimeout(() => {
-        const loading = container.querySelector(".loading-overlay");
-        if (loading) {
-          loading.remove();
-          console.log("VideoModal renderInitial: Overlay de carregamento removido após 6 segundos.");
-        }
-      }, 6000);
-
-      // O listener do botão antigo é removido implicitamente ao substituir o innerHTML
-      console.log("VideoModal renderInitial: O botão de play antigo e seu handler foram removidos implicitamente.");
-    };
-
-    btn.addEventListener("click", clickHandler);
-    console.log("VideoModal renderInitial: Click handler adicionado ao botão de play.");
-  };
+  const [showPlayButton, setShowPlayButton] = useState(true);
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
 
   // Efeito para lidar com o ciclo de vida do player de vídeo e proteções globais
   useEffect(() => {
-    console.log("VideoModal useEffect: isOpen mudou para", isOpen);
     if (isOpen) {
-      console.log("VideoModal useEffect: Modal está aberto, configurando proteções e renderizando estado inicial.");
+      console.log("VideoModal useEffect: Modal está aberto, configurando proteções e resetando estado.");
+      // Resetar o estado quando o modal abre, para garantir que o botão de play apareça
+      setShowPlayButton(true);
+      setShowLoadingOverlay(false);
+
       // Listeners de eventos globais para proteção
       const handleContextMenu = (e: MouseEvent) => {
         e.preventDefault();
@@ -105,29 +52,28 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
       document.addEventListener("contextmenu", handleContextMenu);
       document.addEventListener("keydown", handleKeyDown);
 
-      if (videoContainerRef.current) {
-        console.log("VideoModal useEffect: Chamando renderInitial para o container:", videoContainerRef.current);
-        renderInitial(videoContainerRef.current, videoId); // Pass videoId diretamente
-      } else {
-        console.log("VideoModal useEffect: videoContainerRef.current é null quando o modal abre.");
-      }
-
       return () => {
-        console.log("VideoModal useEffect: Modal está fechando ou desmontando, limpando.");
-        // Limpeza: remove listeners e limpa o conteúdo do container para pausar o vídeo
+        console.log("VideoModal useEffect: Modal está fechando ou desmontando, limpando listeners.");
+        // Limpeza: remove listeners
         document.removeEventListener("contextmenu", handleContextMenu);
         document.removeEventListener("keydown", handleKeyDown);
-        if (videoContainerRef.current) {
-          videoContainerRef.current.innerHTML = ''; // Limpar conteúdo ao fechar
-          console.log("VideoModal useEffect: videoContainerRef.current limpo.");
-        } else {
-          console.log("VideoModal useEffect: videoContainerRef.current é null durante a limpeza.");
-        }
       };
     } else {
       console.log("VideoModal useEffect: Modal está fechado, nenhuma ação necessária do useEffect.");
     }
-  }, [isOpen, videoId]); // Re-executar efeito se o modal abrir ou o videoId mudar
+  }, [isOpen]); // Re-executar efeito se o modal abrir ou fechar
+
+  const handlePlayClick = () => {
+    console.log("VideoModal: Botão de play clicado, carregando iframe.");
+    setShowPlayButton(false);
+    setShowLoadingOverlay(true);
+
+    // Remove a tela de "Carregando vídeo" depois de 6s
+    setTimeout(() => {
+      setShowLoadingOverlay(false);
+      console.log("VideoModal: Overlay de carregamento removido após 6 segundos.");
+    }, 6000);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -139,15 +85,33 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
         </DialogHeader>
         <div className="p-6 pt-4">
           <div
-            id="bubble-video-1" // Manter o ID conforme o script original
             className={cn(
               "video-wrapper yt-protected-container",
               "select-none" // Tailwind class for user-select: none
             )}
-            ref={videoContainerRef}
-            data-video-id={videoId}
           >
-            {/* O player de vídeo será injetado aqui pelo JS */}
+            {showPlayButton ? (
+              <button type="button" className="play-button" onClick={handlePlayClick}>
+                Assistir vídeo
+              </button>
+            ) : (
+              <div className="video-inner" style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <iframe
+                  className="yt-protected-iframe"
+                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1`}
+                  title="Video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                ></iframe>
+                <div className="block-overlay"></div>
+                {showLoadingOverlay && (
+                  <div className="loading-overlay">
+                    <div className="loader-circle"></div>
+                    <div className="loading-text">Carregando vídeo...</div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <DialogFooter className="p-6 pt-0">
