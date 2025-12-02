@@ -241,12 +241,16 @@ const UserPage = () => {
         onClose={() => setShowVideoModal(false)}
         videoId="L4_Igd6Q9Oo"
       />
-      <PixPaymentModal
-        isOpen={showPixPaymentModal}
-        onClose={handlePixModalClose}
-        userSlug={slug || ''} // Passa o slug do usuário para o modal
-        onPaymentConfirmed={handlePaymentConfirmed}
-      />
+      {user && (
+        <PixPaymentModal
+          isOpen={showPixPaymentModal}
+          onClose={handlePixModalClose}
+          userSlug={user.slug}
+          userName={user.name}
+          userEmail={user.email}
+          onPaymentConfirmed={handlePaymentConfirmed}
+        />
+      )}
     </div>
   );
 };
