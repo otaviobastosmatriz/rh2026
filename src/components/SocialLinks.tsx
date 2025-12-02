@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Coffee, Instagram, Facebook, Linkedin, Send, Spotify } from 'lucide-react'; // Importar Spotify
+import { Globe, Coffee, Instagram, Facebook, Linkedin, Send, Music } from 'lucide-react'; // Alterado Spotify para Music
 import { Button } from '@/components/ui/button';
 
 interface SocialLinkProps {
@@ -19,13 +19,13 @@ const SocialLink: React.FC<SocialLinkProps> = ({ icon: Icon, label, href }) => (
 
 const SocialLinks = () => {
   const links = [
-    { icon: Globe, label: 'Site', href: 'https://heliocouto.com' }, // Ajustado para o link do HTML
-    { icon: Coffee, label: 'Cursos', href: 'https://cursosheliocouto.com.br' }, // Ajustado para o link do HTML
-    { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/helio.couto' }, // Ajustado para o link do HTML
-    { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/heliocouto' }, // Ajustado para o link do HTML
-    { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/heliocoutorh/' }, // Ajustado para o link do HTML
-    { icon: Send, label: 'Telegram', href: 'https://t.me/heliocouto' }, // Ajustado para o link do HTML
-    { icon: Spotify, label: 'Spotify', href: 'https://open.spotify.com/artist/5og9v0exhkpYUSdE3Xlfmm?si=Q3Q4-NCOS5GSRKq5HXtogQ' }, // Usando Spotify
+    { icon: Globe, label: 'Site', href: 'https://heliocouto.com' },
+    { icon: Coffee, label: 'Cursos', href: 'https://cursosheliocouto.com.br' },
+    { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/helio.couto' },
+    { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/heliocouto' },
+    { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/heliocoutorh/' },
+    { icon: Send, label: 'Telegram', href: 'https://t.me/heliocouto' },
+    { icon: Music, label: 'Spotify', href: 'https://open.spotify.com/artist/5og9v0exhkpYUSdE3Xlfmm?si=Q3Q4-NCOS5GSRKq5HXtogQ' }, // Usando Music como substituto
   ];
 
   return (
