@@ -67,25 +67,25 @@ serve(async (req) => {
 
     // IMPORTANT: For production, move this key to Supabase Secrets and access via Deno.env.get()
     const BSPAY_AUTH_KEY = 'Basic aXNhcXVlcmVpc183ODA3MjgzNTEyOjNhZWI1Mzg5NDQ5Yzg1M2YzYmFkNmJmNzBlZmFlMDBmNjhiZWUzNjg0MjdlYTdhZWEwNTY1OTk2ZmY0OWUxYmY=';
-    const BSPAY_API_BASE_URL = 'https://api.bspay.co/v2'; // Base URL atualizada para .co e v2
+    const BSPAY_API_BASE_URL = 'https://api.bspay.co/v2';
 
     // 1. Get Access Token
     console.log(`Buscando token em: ${BSPAY_API_BASE_URL}/oauth/token`);
     const tokenResponse = await fetch(`${BSPAY_API_BASE_URL}/oauth/token`, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json', // Adicionado cabeçalho Accept
+        'Accept': 'application/json',
         'Authorization': BSPAY_AUTH_KEY,
         'Content-Type': 'application/json',
       },
     });
 
     if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text(); // Captura o texto bruto da resposta
+      const errorText = await tokenResponse.text();
       console.error('BSPay Token Error (raw):', errorText);
       let errorData = {};
       try {
-        errorData = JSON.parse(errorText); // Tenta parsear como JSON se for válido
+        errorData = JSON.parse(errorText);
       } catch (e) {
         // Se não for JSON, mantém o texto bruto
       }
@@ -95,45 +95,46 @@ serve(async (req) => {
     const { access_token } = await tokenResponse.json();
     console.log('Token de acesso BSPay obtido com sucesso.');
 
-    // 2. Generate Pix Charge
-    console.log(`Gerando cobrança Pix para o usuário: ${userSlug}`);
+    // 2. Generate Pix QR Code
+    console.log(`Gerando QR Code Pix para o usuário: ${userSlug}`);
     const generatedCpf = generateValidCpf(); // Generate a random valid CPF
-    const pixChargePayload = {
-      amount: 4800, // R$48.00 in cents
-      external_id: userSlug, // Use user slug to identify the payment
+    const pixQrCodePayload = {
+      amount: "48", // R$48.00 como string
+      external_id: userSlug, // Mantido como userSlug para compatibilidade com o webhook
+      payerQuestion: "",
       payer: {
         name: userName,
-        email: userEmail,
         document: generatedCpf,
+        email: userEmail,
       },
-      description: "Ressonância Harmônica - Portal 2026",
-      expires_in: 600, // 10 minutes
+      postbackUrl: "https://ressonanteharmonica.com/api/1.1/wf/postback_pix",
     };
 
-    const pixChargeResponse = await fetch(`${BSPAY_API_BASE_URL}/pix/charge`, { // Endpoint Pix Charge atualizado para v2
+    const pixQrCodeResponse = await fetch(`${BSPAY_API_BASE_URL}/pix/qrcode`, {
       method: 'POST',
       headers: {
+        'Accept': 'application/json', // Adicionado cabeçalho Accept
         'Authorization': `Bearer ${access_token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(pixChargePayload),
+      body: JSON.stringify(pixQrCodePayload),
     });
 
-    if (!pixChargeResponse.ok) {
-      const errorText = await pixChargeResponse.text(); // Captura o texto bruto da resposta
-      console.error('BSPay Pix Charge Error (raw):', errorText);
+    if (!pixQrCodeResponse.ok) {
+      const errorText = await pixQrCodeResponse.text();
+      console.error('BSPay Pix QR Code Error (raw):', errorText);
       let errorData = {};
       try {
-        errorData = JSON.parse(errorText); // Tenta parsear como JSON se for válido
+        errorData = JSON.parse(errorText);
       } catch (e) {
         // Se não for JSON, mantém o texto bruto
       }
-      throw new Error(`Failed to generate Pix charge: ${pixChargeResponse.statusText}. Details: ${JSON.stringify(errorData || errorText)}`);
+      throw new Error(`Failed to generate Pix QR Code: ${pixQrCodeResponse.statusText}. Details: ${JSON.stringify(errorData || errorText)}`);
     }
 
-    const pixData = await pixChargeResponse.json();
+    const pixData = await pixQrCodeResponse.json();
     const { brCode, qrCodeUrl } = pixData;
-    console.log('Cobrança Pix gerada com sucesso.');
+    console.log('QR Code Pix gerado com sucesso.');
 
     return new Response(JSON.stringify({ brCode, qrCodeUrl }), {
       status: 200,
