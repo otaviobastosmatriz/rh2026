@@ -49,6 +49,11 @@ const PixPaymentModal: React.FC<PixPaymentModalProps> = ({ isOpen, onClose, user
             body: { userSlug, userName, userEmail },
           });
 
+          // --- INÍCIO DOS LOGS DE DEPURÇÃO ---
+          console.log("Resposta da Edge Function (data):", data);
+          console.log("Resposta da Edge Function (error):", error);
+          // --- FIM DOS LOGS DE DEPURÇÃO ---
+
           if (error) {
             throw error;
           }
@@ -58,10 +63,12 @@ const PixPaymentModal: React.FC<PixPaymentModalProps> = ({ isOpen, onClose, user
             setQrCodeUrl(data.qrCodeUrl);
             showSuccess('Código Pix gerado com sucesso!');
           } else {
-            showError('Falha ao gerar o código Pix. Tente novamente.');
+            // Este else será acionado se 'data' for null/undefined ou se 'brCode'/'qrCodeUrl' estiverem faltando
+            console.error("Dados Pix incompletos recebidos:", data);
+            showError('Falha ao gerar o código Pix. Dados incompletos.');
           }
         } catch (err: any) {
-          console.error("Erro ao gerar Pix:", err.message);
+          console.error("Erro ao gerar Pix no frontend:", err.message);
           showError('Erro ao gerar o código Pix.');
         } finally {
           setIsGeneratingPix(false);
