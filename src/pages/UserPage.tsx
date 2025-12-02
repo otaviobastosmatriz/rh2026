@@ -160,7 +160,7 @@ const UserPage = () => {
             <div className="text-center p-5 flex-shrink-0">
               <img
                 className="img-fluid rounded-full border-4 border-heliopurple w-40 h-40 object-cover mx-auto"
-                src="/images/heliocouto.webp"
+                src="/images/heliocouto.jpg" // Caminho da imagem atualizado
                 alt="Professor Hélio Couto"
               />
             </div>
