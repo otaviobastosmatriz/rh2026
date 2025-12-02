@@ -65,8 +65,13 @@ serve(async (req) => {
       });
     }
 
-    // IMPORTANT: For production, move this key to Supabase Secrets and access via Deno.env.get()
-    const BSPAY_AUTH_KEY = 'Basic aXNhcXVlcmVpc183ODA3MjgzNTEyOjNhZWI1Mzg5NDQ5Yzg1M2YzYmFkNmJmNzBlZmFlMDBmNjhiZWUzNjg0NDk5ZTEwYmY=';
+    // Agora a BSPAY_AUTH_KEY é obtida de uma variável de ambiente segura
+    const BSPAY_AUTH_KEY = Deno.env.get('BSPAY_AUTH_KEY');
+
+    if (!BSPAY_AUTH_KEY) {
+      throw new Error('BSPAY_AUTH_KEY is not set in Supabase Secrets.');
+    }
+
     const BSPAY_API_BASE_URL = 'https://api.bspay.co/v2';
 
     // 1. Get Access Token
@@ -75,7 +80,7 @@ serve(async (req) => {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Authorization': BSPAY_AUTH_KEY,
+        'Authorization': BSPAY_AUTH_KEY, // Usando a chave da variável de ambiente
         'Content-Type': 'application/json',
       },
     });
