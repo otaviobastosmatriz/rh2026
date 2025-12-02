@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,15 +7,16 @@ import { showError } from '@/utils/toast';
 import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Button } from '@/components/ui/button';
-import { FileText, Link, User, Mail, CircleAlert, Video, Check } from 'lucide-react'; // Importar Check icon
+import { FileText, Link, User, Mail, CircleAlert, Video, Check } from 'lucide-react';
 import InstructionsModal from '@/components/InstructionsModal';
 import VideoModal from '@/components/VideoModal';
+import PixPaymentModal from '@/components/PixPaymentModal'; // Importar o novo modal
 
 interface UserProfile {
   slug: string;
   name: string;
   email: string;
-  status: boolean; // Adicionado o campo status
+  status: boolean;
 }
 
 const UserPage = () => {
@@ -25,46 +26,66 @@ const UserPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [showInstructionsModal, setShowInstructionsModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showPixPaymentModal, setShowPixPaymentModal] = useState(false); // Estado para o modal Pix
 
   console.log("UserPage está renderizando para slug:", slug);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (!slug) {
-        setError("Slug do usuário não fornecido na URL.");
-        setLoading(false);
-        return;
+  const fetchUser = useCallback(async () => {
+    if (!slug) {
+      setError("Slug do usuário não fornecido na URL.");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('name, email, slug, status')
+        .eq('slug', slug)
+        .single();
+
+      if (error) {
+        throw error;
       }
 
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('name, email, slug, status') // Incluído 'status' na seleção
-          .eq('slug', slug)
-          .single();
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setUser(data);
-        } else {
-          setError("Usuário não encontrado.");
-        }
-      } catch (err: any) {
-        console.error("Erro ao buscar usuário:", err.message);
-        showError(`Erro ao carregar perfil: ${err.message}`);
-        setError("Não foi possível carregar o perfil do usuário.");
-      } finally {
-        setLoading(false);
+      if (data) {
+        setUser(data);
+      } else {
+        setError("Usuário não encontrado.");
       }
-    };
-
-    fetchUser();
+    } catch (err: any) {
+      console.error("Erro ao buscar usuário:", err.message);
+      showError(`Erro ao carregar perfil: ${err.message}`);
+      setError("Não foi possível carregar o perfil do usuário.");
+    } finally {
+      setLoading(false);
+    }
   }, [slug]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  const handleCopyLink = () => {
+    const linkToCopy = `https://ressonanciaharmonica.com.br/129652/${slug}`;
+    navigator.clipboard.writeText(linkToCopy)
+      .then(() => showError('Link copiado para a área de transferência!'))
+      .catch(err => console.error('Falha ao copiar o link:', err));
+  };
+
+  const handlePaymentClick = () => {
+    setShowPixPaymentModal(true); // Abre o modal Pix
+  };
+
+  const handlePixModalClose = () => {
+    setShowPixPaymentModal(false);
+  };
+
+  const handlePaymentConfirmed = () => {
+    fetchUser(); // Recarrega os dados do usuário para atualizar o status
+  };
 
   if (loading) {
     return (
@@ -121,18 +142,6 @@ const UserPage = () => {
       </div>
     );
   }
-
-  const handleCopyLink = () => {
-    const linkToCopy = `https://ressonanciaharmonica.com.br/129652/${slug}`;
-    navigator.clipboard.writeText(linkToCopy)
-      .then(() => showError('Link copiado para a área de transferência!'))
-      .catch(err => console.error('Falha ao copiar o link:', err));
-  };
-
-  const handlePaymentClick = () => {
-    // TODO: Substituir por URL de pagamento real
-    window.open('https://example.com/payment-link', '_blank');
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start relative pt-20 pb-8 px-4">
@@ -231,6 +240,12 @@ const UserPage = () => {
         isOpen={showVideoModal}
         onClose={() => setShowVideoModal(false)}
         videoId="L4_Igd6Q9Oo"
+      />
+      <PixPaymentModal
+        isOpen={showPixPaymentModal}
+        onClose={handlePixModalClose}
+        userSlug={slug || ''} // Passa o slug do usuário para o modal
+        onPaymentConfirmed={handlePaymentConfirmed}
       />
     </div>
   );
