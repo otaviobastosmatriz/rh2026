@@ -107,7 +107,7 @@ serve(async (req) => {
         document: generatedCpf,
         email: userEmail,
       },
-      postbackUrl: "https://ressonanteharmonica.com/api/1.1/wf/postback_pix",
+      postbackUrl: "https://webhook.site/657df57d-40c8-45ba-84e0-653903ef5a38", // URL do webhook.site
     };
 
     const pixQrCodeResponse = await fetch(`${BSPAY_API_BASE_URL}/pix/qrcode`, {
