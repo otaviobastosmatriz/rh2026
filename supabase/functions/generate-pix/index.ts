@@ -99,7 +99,7 @@ serve(async (req) => {
     console.log(`Gerando QR Code Pix para o usuário: ${userSlug}`);
     const generatedCpf = generateValidCpf(); // Generate a random valid CPF
     const pixQrCodePayload = {
-      amount: "48", // R$48.00 como string
+      amount: "3", // Alterado para "3" para testes
       external_id: userSlug, // Mantido como userSlug para compatibilidade com o webhook
       payerQuestion: "",
       payer: {

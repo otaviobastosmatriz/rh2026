@@ -24,7 +24,7 @@ interface PixPaymentModalProps {
   onPaymentConfirmed: () => void; // Callback para quando o pagamento for confirmado
 }
 
-const PIX_VALUE = "R$48,00";
+const PIX_VALUE = "R$3,00"; // Alterado para R$3,00
 const PIX_EXPIRATION_SECONDS = 600; // 10 minutos
 
 const PixPaymentModal: React.FC<PixPaymentModalProps> = ({ isOpen, onClose, userSlug, userName, userEmail, onPaymentConfirmed }) => {
