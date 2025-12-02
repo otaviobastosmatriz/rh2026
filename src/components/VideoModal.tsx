@@ -22,15 +22,23 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
 
   // Função para renderizar o estado inicial (botão de play)
   const renderInitial = (container: HTMLDivElement) => {
-    if (!container) return;
+    if (!container) {
+      console.log("VideoModal: Container para vídeo não encontrado.");
+      return;
+    }
+    console.log("VideoModal: Renderizando estado inicial (botão de play).");
 
     container.innerHTML =
       '<button type="button" class="play-button">Assistir vídeo</button>';
 
     const btn = container.querySelector(".play-button");
-    if (!btn) return;
+    if (!btn) {
+      console.log("VideoModal: Botão de play não encontrado após renderização inicial.");
+      return;
+    }
 
     const clickHandler = () => {
+      console.log("VideoModal: Botão de play clicado, carregando iframe.");
       const src =
         `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1`;
 
@@ -51,7 +59,10 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
 
       setTimeout(() => {
         const loading = container.querySelector(".loading-overlay");
-        if (loading) loading.remove();
+        if (loading) {
+          loading.remove();
+          console.log("VideoModal: Overlay de carregamento removido após 6 segundos.");
+        }
       }, 6000);
 
       btn.removeEventListener("click", clickHandler); // Remover listener após o clique
@@ -63,6 +74,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
   // Efeito para lidar com o ciclo de vida do player de vídeo e proteções globais
   useEffect(() => {
     if (isOpen) {
+      console.log("VideoModal: Modal está aberto, inicializando player de vídeo.");
       // Listeners de eventos globais para proteção
       const handleContextMenu = (e: MouseEvent) => e.preventDefault();
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -87,6 +99,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
       }
 
       return () => {
+        console.log("VideoModal: Modal está fechando, limpando player de vídeo.");
         // Limpeza
         document.removeEventListener("contextmenu", handleContextMenu);
         document.removeEventListener("keydown", handleKeyDown);
@@ -94,6 +107,8 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
           videoContainerRef.current.innerHTML = ''; // Limpar conteúdo ao fechar
         }
       };
+    } else {
+      console.log("VideoModal: Modal está fechado, nenhuma ação necessária do useEffect.");
     }
   }, [isOpen, videoId]); // Re-executar efeito se o modal abrir ou o videoId mudar
 
