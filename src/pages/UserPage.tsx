@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { showError } from '@/utils/toast';
 import Header from '@/components/Header';
-import SocialLinks from '@/components/SocialLinks';
+// import SocialLinks from '@/components/SocialLinks'; // Removido
 import AudioPlayer from '@/components/AudioPlayer';
 import { Button } from '@/components/ui/button';
 import { FileText, Link, User, Mail, CircleAlert } from 'lucide-react'; // Adicionado CircleAlert para o aviso
@@ -135,7 +135,7 @@ const UserPage = () => {
             Siga o <span className="text-heliopurple">Professor Hélio Couto</span> nas redes sociais:
           </p>
 
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-8">
+          <div className="flex flex-col items-center justify-center mb-8"> {/* Ajustado para centralizar a imagem */}
             <div className="text-center p-5 flex-shrink-0">
               <img
                 className="img-fluid rounded-full border-4 border-heliopurple w-40 h-40 object-cover mx-auto"
@@ -143,9 +143,9 @@ const UserPage = () => {
                 alt="Professor Hélio Couto"
               />
             </div>
-            <div className="flex-1 w-full max-w-xs lg:max-w-none">
+            {/* <div className="flex-1 w-full max-w-xs lg:max-w-none">
               <SocialLinks />
-            </div>
+            </div> */} {/* SocialLinks removido */}
           </div>
 
           <hr className="border-heliopurple my-8" />
