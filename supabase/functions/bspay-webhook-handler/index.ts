@@ -15,25 +15,25 @@ serve(async (req) => {
     const payload = await req.json();
     console.log('BSPay Webhook received:', payload);
 
-    // Extract relevant information from the webhook payload, now nested under requestBody
-    const externalId = payload.requestBody?.external_id; // Access external_id from requestBody
-    const status = payload.requestBody?.status; // Access status from requestBody
+    // Extrair external_id e status do requestBody, conforme o payload fornecido
+    const externalId = payload.requestBody?.external_id;
+    const status = payload.requestBody?.status;
 
     if (!externalId || !status) {
-      return new Response(JSON.stringify({ error: 'Missing external_id or status in webhook payload (or not in requestBody)' }), {
+      return new Response(JSON.stringify({ error: 'Missing external_id or status in webhook payload' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Initialize Supabase client with service role key for server-side updates
-    // IMPORTANT: SUPABASE_SERVICE_ROLE_KEY must be set as a Supabase Secret for this Edge Function
+    // Inicializar o cliente Supabase com a chave de serviço para atualizações no lado do servidor
+    // IMPORTANTE: SUPABASE_SERVICE_ROLE_KEY deve ser configurada como um Secret para esta Edge Function
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    if (status === 'PAID') { // Assuming 'PAID' is the status for confirmed payment
+    if (status === 'PAID') {
       const { data, error } = await supabase
         .from('users')
         .update({ status: true })
