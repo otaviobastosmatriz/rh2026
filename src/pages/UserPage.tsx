@@ -134,8 +134,11 @@ const UserPage = () => {
       <Card className="w-full max-w-3xl mx-auto p-8 lg:p-12 bg-white rounded-lg shadow-lg z-0 mt-8">
         <CardContent className="p-0">
           <h2 className="text-heliopurple text-center font-bold text-2xl mb-2">Seja bem-vindo (a)</h2>
-          <p className="text-center text-gray-700 font-semibold mb-6">
-            Siga o <span className="text-heliopurple">Professor Hélio Couto</span> nas redes sociais:
+          <p className="text-center text-gray-700 font-semibold mb-1">
+            Abaixo está disponível sua Ressonância Portal 2026
+          </p>
+          <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
+            A Ressonância Harmônica – Portal 2026 ajusta sua vibração em dezembro para que você entre em 2026 alinhado à prosperidade, saúde, riqueza e felicidade. Uma onda extra feita para abrir seu campo para um novo ciclo.
           </p>
 
           <div className="flex flex-col items-center justify-center mb-8">
