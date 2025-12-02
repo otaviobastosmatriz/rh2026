@@ -68,11 +68,11 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
     setShowPlayButton(false);
     setShowLoadingOverlay(true);
 
-    // Remove a tela de "Carregando vídeo" depois de 6s
+    // Remove a tela de "Carregando vídeo" depois de 7s (anteriormente 6s)
     setTimeout(() => {
       setShowLoadingOverlay(false);
-      console.log("VideoModal: Overlay de carregamento removido após 6 segundos.");
-    }, 6000);
+      console.log("VideoModal: Overlay de carregamento removido após 7 segundos.");
+    }, 7000); // Alterado de 6000 para 7000
   };
 
   return (
