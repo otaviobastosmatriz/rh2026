@@ -133,13 +133,15 @@ serve(async (req) => {
     }
 
     const pixData = await pixQrCodeResponse.json();
-    console.log('Resposta completa da BSPay para Pix QR Code:', pixData); // NOVO LOG AQUI
+    console.log('Resposta completa da BSPay para Pix QR Code:', pixData);
 
-    // AQUI ESTÁ O PONTO CRÍTICO: Precisamos ajustar a desestruturação para os nomes corretos das propriedades
-    // Por exemplo, se a BSPay retorna { payload: "...", qr_code_image: "..." }
-    // const brCode = pixData.payload;
-    // const qrCodeUrl = pixData.qr_code_image;
-    const { brCode, qrCodeUrl } = pixData; // Manter por enquanto, mas o log acima nos dirá o que mudar
+    const brCode = pixData.qrcode; // Mapeia 'qrcode' da BSPay para 'brCode'
+    let qrCodeUrl = null;
+
+    if (brCode) {
+      // Gera uma URL de imagem para o QR Code a partir do BR Code
+      qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(brCode)}`;
+    }
 
     console.log('QR Code Pix gerado com sucesso.');
     console.log('Retornando dados Pix:', { brCode, qrCodeUrl });
