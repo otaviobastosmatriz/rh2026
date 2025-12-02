@@ -20,27 +20,26 @@ interface VideoModalProps {
 const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
-  // Função para renderizar o estado inicial (botão de play)
-  const renderInitial = (container: HTMLDivElement) => {
+  // Função interna: monta o estado INICIAL (botão "Assistir vídeo")
+  const renderInitial = (container: HTMLDivElement, currentVideoId: string) => {
     if (!container) {
       console.log("VideoModal: Container para vídeo não encontrado.");
       return;
     }
     console.log("VideoModal: Renderizando estado inicial (botão de play).");
 
-    container.innerHTML =
-      '<button type="button" class="play-button">Assistir vídeo</button>';
+    // Limpa qualquer conteúdo existente e listeners para garantir um estado limpo
+    container.innerHTML = '';
 
-    const btn = container.querySelector(".play-button");
-    if (!btn) {
-      console.log("VideoModal: Botão de play não encontrado após renderização inicial.");
-      return;
-    }
+    const playButton = document.createElement('button');
+    playButton.type = 'button';
+    playButton.className = 'play-button';
+    playButton.textContent = 'Assistir vídeo';
 
     const clickHandler = () => {
       console.log("VideoModal: Botão de play clicado, carregando iframe.");
       const src =
-        `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1`;
+        `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&fs=0&disablekb=1`;
 
       container.innerHTML =
         '<div class="video-inner" style="position:relative;width:100%;height:100%;">' +
@@ -57,6 +56,8 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
           '</div>' +
         '</div>';
 
+      // Remove a tela de "Carregando vídeo" depois de 6s,
+      // mas mantém o overlay de bloqueio de clique
       setTimeout(() => {
         const loading = container.querySelector(".loading-overlay");
         if (loading) {
@@ -65,10 +66,11 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
         }
       }, 6000);
 
-      btn.removeEventListener("click", clickHandler); // Remover listener após o clique
+      playButton.removeEventListener("click", clickHandler); // Remover listener após o clique
     };
 
-    btn.addEventListener("click", clickHandler);
+    playButton.addEventListener("click", clickHandler);
+    container.appendChild(playButton);
   };
 
   // Efeito para lidar com o ciclo de vida do player de vídeo e proteções globais
@@ -95,12 +97,12 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
       document.addEventListener("keydown", handleKeyDown);
 
       if (videoContainerRef.current) {
-        renderInitial(videoContainerRef.current);
+        renderInitial(videoContainerRef.current, videoId); // Pass videoId diretamente
       }
 
       return () => {
         console.log("VideoModal: Modal está fechando, limpando player de vídeo.");
-        // Limpeza
+        // Limpeza: remove listeners e limpa o conteúdo do container para pausar o vídeo
         document.removeEventListener("contextmenu", handleContextMenu);
         document.removeEventListener("keydown", handleKeyDown);
         if (videoContainerRef.current) {
@@ -125,7 +127,6 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
             id="bubble-video-1" // Manter o ID conforme o script original
             className={cn(
               "video-wrapper yt-protected-container",
-              // Aplicar user-select diretamente ao wrapper e seus filhos para melhor escopo
               "select-none" // Tailwind class for user-select: none
             )}
             ref={videoContainerRef}
