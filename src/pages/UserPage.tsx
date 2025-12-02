@@ -7,8 +7,9 @@ import { showError } from '@/utils/toast';
 import Header from '@/components/Header';
 import AudioPlayer from '@/components/AudioPlayer';
 import { Button } from '@/components/ui/button';
-import { FileText, Link, User, Mail, CircleAlert } from 'lucide-react';
-import InstructionsModal from '@/components/InstructionsModal'; // Importar o novo componente
+import { FileText, Link, User, Mail, CircleAlert, Video } from 'lucide-react'; // Import Video icon
+import InstructionsModal from '@/components/InstructionsModal';
+import VideoModal from '@/components/VideoModal'; // Importar o novo componente VideoModal
 
 interface UserProfile {
   slug: string;
@@ -21,7 +22,8 @@ const UserPage = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showInstructionsModal, setShowInstructionsModal] = useState(false); // Novo estado para o modal
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false); // Novo estado para o modal de vídeo
 
   console.log("UserPage está renderizando para slug:", slug);
 
@@ -172,12 +174,18 @@ const UserPage = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 mt-5">
-            {/* Botão alterado para abrir o modal */}
             <Button
               onClick={() => setShowInstructionsModal(true)}
               className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full sm:w-auto"
             >
               <FileText className="h-5 w-5 mr-2" /> Instruções da RH
+            </Button>
+            {/* Novo botão para o modal de vídeo */}
+            <Button
+              onClick={() => setShowVideoModal(true)}
+              className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full sm:w-auto"
+            >
+              <Video className="h-5 w-5 mr-2" /> Vídeo RH Portal 2026
             </Button>
             <Button onClick={handleCopyLink} className="bg-heliopurple hover:bg-heliopurple-light text-white px-6 py-3 rounded-md flex items-center justify-center w-full">
               <Link className="h-5 w-5 mr-2" /> Copiar o link da minha RH
@@ -190,10 +198,15 @@ const UserPage = () => {
         <p className="text-white">&copy; Hélio Couto 2025 | Todos os direitos reservados | <a href="https://ressonanciaharmonica.com.br/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">Política de privacidade</a></p>
       </footer>
 
-      {/* Renderiza o modal de instruções */}
       <InstructionsModal
         isOpen={showInstructionsModal}
         onClose={() => setShowInstructionsModal(false)}
+      />
+      {/* Renderizar o novo VideoModal */}
+      <VideoModal
+        isOpen={showVideoModal}
+        onClose={() => setShowVideoModal(false)}
+        videoId="L4_Igd6Q9Oo" // O ID do vídeo do YouTube
       />
     </div>
   );
