@@ -116,7 +116,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, onClose, videoId }) => 
         </div>
         <DialogFooter className="p-6 pt-0">
           <Button onClick={onClose} className="bg-heliopurple hover:bg-heliopurple-light text-white">
-            Fechar
+            Fechar vídeo e abrir RH Portal 2026
           </Button>
         </DialogFooter>
       </DialogContent>
