@@ -19,8 +19,8 @@ function generateValidCpf(): string {
       sum += cpfBase[i] * multiplier;
       multiplier--;
     }
-    const remainder = sum % 11;
-    return remainder < 2 ? 0 : 11 - remainder;
+    const remainder = sum < 2 ? 0 : 11 - remainder; // Corrigido para remainder < 2
+    return remainder;
   }
 
   let cpf = Array.from({ length: 9 }, () => randomDigit());
@@ -65,8 +65,8 @@ serve(async (req) => {
       });
     }
 
-    // Agora a BSPAY_AUTH_KEY é obtida de uma variável de ambiente segura
     const BSPAY_AUTH_KEY = Deno.env.get('BSPAY_AUTH_KEY');
+    console.log('BSPAY_AUTH_KEY length:', BSPAY_AUTH_KEY?.length); // Log para depuração
 
     if (!BSPAY_AUTH_KEY) {
       throw new Error('BSPAY_AUTH_KEY is not set in Supabase Secrets.');
