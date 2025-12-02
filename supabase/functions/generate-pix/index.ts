@@ -63,10 +63,15 @@ serve(async (req) => {
     });
 
     if (!tokenResponse.ok) {
-      const errorData = await tokenResponse.json();
-      console.error('BSPay Token Error:', errorData);
-      // Incluindo detalhes do erro na mensagem para melhor depuração
-      throw new Error(`Failed to get BSPay token: ${tokenResponse.statusText}. Details: ${JSON.stringify(errorData)}`);
+      const errorText = await tokenResponse.text(); // Captura o texto bruto da resposta
+      console.error('BSPay Token Error (raw):', errorText);
+      let errorData = {};
+      try {
+        errorData = JSON.parse(errorText); // Tenta parsear como JSON se for válido
+      } catch (e) {
+        // Se não for JSON, mantém o texto bruto
+      }
+      throw new Error(`Failed to get BSPay token: ${tokenResponse.statusText}. Details: ${JSON.stringify(errorData || errorText)}`);
     }
 
     const { access_token } = await tokenResponse.json();
@@ -95,10 +100,15 @@ serve(async (req) => {
     });
 
     if (!pixChargeResponse.ok) {
-      const errorData = await pixChargeResponse.json();
-      console.error('BSPay Pix Charge Error:', errorData);
-      // Incluindo detalhes do erro na mensagem para melhor depuração
-      throw new Error(`Failed to generate Pix charge: ${pixChargeResponse.statusText}. Details: ${JSON.stringify(errorData)}`);
+      const errorText = await pixChargeResponse.text(); // Captura o texto bruto da resposta
+      console.error('BSPay Pix Charge Error (raw):', errorText);
+      let errorData = {};
+      try {
+        errorData = JSON.parse(errorText); // Tenta parsear como JSON se for válido
+      } catch (e) {
+        // Se não for JSON, mantém o texto bruto
+      }
+      throw new Error(`Failed to generate Pix charge: ${pixChargeResponse.statusText}. Details: ${JSON.stringify(errorData || errorText)}`);
     }
 
     const pixData = await pixChargeResponse.json();
